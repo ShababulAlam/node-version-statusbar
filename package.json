@@ -1,0 +1,74 @@
+{
+  "name": "node-version-statusbar",
+  "displayName": "Node Version Status Bar",
+  "description": "Shows the current Node.js version in the status bar",
+  "version": "1.0.0",
+  "publisher": "Shababul Alam",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "node",
+    "nodejs",
+    "version",
+    "status bar"
+  ],
+  "icon": "images/icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "nodeVersion.refresh",
+        "title": "Refresh Node Version",
+        "category": "Node Version"
+      },
+      {
+        "command": "nodeVersion.copyVersion",
+        "title": "Copy Node Version",
+        "category": "Node Version"
+      }
+    ],
+    "configuration": {
+      "title": "Node Version Status Bar",
+      "properties": {
+        "nodeVersion.showInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Node.js version in status bar"
+        },
+        "nodeVersion.refreshInterval": {
+          "type": "number",
+          "default": 0,
+          "description": "Auto-refresh interval in seconds (0 = disabled)"
+        },
+        "nodeVersion.statusBarText": {
+          "type": "string",
+          "default": "$(symbol-method) Node {version}",
+          "description": "Status bar text template. Use {version} as placeholder"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  }
+}
