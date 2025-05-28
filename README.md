@@ -17,6 +17,7 @@ A powerful VS Code extension that displays your current Node.js version in the s
 ## Features
 
 - **🚀 Version Switching**: Click status bar to instantly switch between installed Node.js versions
+- **🔄 Auto VS Code Reload**: Automatically reloads VS Code after successful version switching
 - **🛠️ Multi-Manager Support**: Works with nvm, fnm, and volta version managers
 - **📦 Install New Versions**: Install new Node.js versions directly from VS Code
 - **📋 One-Click Copy**: Copy version to clipboard via command palette
@@ -24,6 +25,7 @@ A powerful VS Code extension that displays your current Node.js version in the s
 - **⚙️ Highly Customizable**: Personalize display format and behavior
 - **🛡️ Smart Error Handling**: Clear indicators with actionable suggestions
 - **🎯 Lightweight**: Minimal performance impact on VS Code
+- **🖥️ Windows NVM Support**: Full compatibility with NVM for Windows without terminal errors
 
 ## Installation
 
@@ -139,8 +141,18 @@ The extension provides these commands (accessible via `Ctrl+Shift+P`):
 
 1. **Click Status Bar**: Click the Node.js version in the status bar
 2. **Select Version**: Choose from the list of installed versions
-3. **Automatic Switch**: The extension handles the switching via your version manager
-4. **Reload if Needed**: Some changes may require reloading VS Code
+3. **Automatic Processing**: The extension handles the switching and verification
+4. **Auto Reload**: VS Code automatically reloads to apply changes (optional)
+
+**Progress Indicators:**
+- "Executing switch command..." - Running the version manager command
+- "Verifying switch..." - Checking if the switch was successful  
+- "Switch completed!" - Version switch verified and successful
+
+**Reload Options:**
+- **Automatic**: VS Code will prompt to reload after successful switching
+- **Manual**: Choose "Skip Reload" if you prefer to reload later
+- **Verification**: Extension verifies the switch worked before prompting reload
 
 ### Installing New Versions
 
@@ -161,6 +173,17 @@ The extension provides these commands (accessible via `Ctrl+Shift+P`):
 | **Major** | `18` | Latest in major version |
 
 ## Troubleshooting
+
+### Windows NVM Issues
+
+**Problem**: "NVM for Windows should be run from terminal such as CMD or Powershell"
+
+**Solutions**:
+1. **Automatic Fix**: Extension now handles this automatically by using proper CMD execution
+2. **Manual Verification**: Check that NVM for Windows is properly installed:
+   ```cmd
+   nvm version
+   nvm list
 
 ### Version Manager Not Detected
 
@@ -345,7 +368,13 @@ When reporting bugs, please include:
 
 ## Changelog
 
-### [1.1.0] - Latest Release ✨
+### [1.2.0] - Latest Release ✨
+- **Automatic VS Code Reload**: Seamless version switching with auto-reload
+- **Windows NVM Compatibility**: Fixed NVM for Windows terminal errors
+- **Version Switch Verification**: Ensures switches actually work before proceeding
+- **Enhanced Progress Reporting**: Detailed status updates during operations
+
+### [1.1.0]
 - **Node.js Version Switching**: Click status bar to switch between versions
 - **Multi-Manager Support**: nvm, fnm, and volta support
 - **Install New Versions**: Direct installation from VS Code
