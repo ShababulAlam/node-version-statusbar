@@ -4,6 +4,10 @@
   "description": "Shows the current Node.js version in the status bar",
   "version": "1.0.0",
   "publisher": "Shababul Alam",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shababulalam/node-version-statusbar.git"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },
