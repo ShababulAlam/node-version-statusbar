@@ -101,6 +101,8 @@ class NodeVersionProvider implements vscode.Disposable {
   }
 
   private async initializeVersionManagers() {
+    const isWindows = os.platform() === "win32";
+
     const managers: VersionManager[] = [
       {
         name: "nvm",
@@ -128,7 +130,12 @@ class NodeVersionProvider implements vscode.Disposable {
     // Check which version managers are available
     for (const manager of managers) {
       try {
-        await execAsync(`${manager.command} --version`);
+        const execCommand =
+          isWindows && manager.name === "nvm"
+            ? `cmd /c "${manager.command} --version"`
+            : `${manager.command} --version`;
+
+        await execAsync(execCommand);
         manager.isAvailable = true;
       } catch (error) {
         manager.isAvailable = false;
@@ -265,7 +272,11 @@ class NodeVersionProvider implements vscode.Disposable {
 
     if (!version) return;
 
-    const terminal = vscode.window.createTerminal(`Install Node ${version}`);
+    const isWindows = os.platform() === "win32";
+    const terminal = vscode.window.createTerminal({
+      name: `Install Node ${version}`,
+      shellPath: isWindows ? "cmd.exe" : undefined,
+    });
 
     let installCommand: string;
     switch (manager.name) {
@@ -346,7 +357,15 @@ class NodeVersionProvider implements vscode.Disposable {
     const versions: NodeVersion[] = [];
 
     try {
-      const { stdout } = await execAsync(manager.listCommand);
+      const isWindows = os.platform() === "win32";
+
+      // For NVM on Windows, use cmd /c to execute the command
+      const execCommand =
+        isWindows && manager.name === "nvm"
+          ? `cmd /c "${manager.listCommand}"`
+          : manager.listCommand;
+
+      const { stdout } = await execAsync(execCommand);
       const lines = stdout.split("\n").filter((line) => line.trim());
 
       for (const line of lines) {
@@ -370,11 +389,15 @@ class NodeVersionProvider implements vscode.Disposable {
 
     switch (manager.name) {
       case "nvm":
-        // Parse nvm output: "   v18.17.0" or "-> v18.17.0 (Currently using 64-bit executable)"
+        // Parse nvm output: "   v18.17.0" or "* v18.17.0" or "-> v18.17.0 (Currently using 64-bit executable)"
+        // Also handle Windows NVM format: "  18.17.0" or "* 18.17.0"
         const nvmMatch = trimmed.match(/^(\*|\->)?\s*(v?\d+\.\d+\.\d+)/);
         if (nvmMatch) {
+          const version = nvmMatch[2].startsWith("v")
+            ? nvmMatch[2]
+            : `v${nvmMatch[2]}`;
           return {
-            version: nvmMatch[2],
+            version: version,
             manager,
             isActive: trimmed.includes("->") || trimmed.includes("*"),
             path: undefined,
@@ -414,11 +437,20 @@ class NodeVersionProvider implements vscode.Disposable {
 
   private async switchToVersion(nodeVersion: NodeVersion): Promise<void> {
     const manager = nodeVersion.manager;
+    const isWindows = os.platform() === "win32";
+
     let command: string;
+    const versionNumber = nodeVersion.version.replace("v", ""); // Remove 'v' prefix for Windows NVM
 
     switch (manager.name) {
       case "nvm":
-        command = `${manager.useCommand} ${nodeVersion.version}`;
+        if (isWindows) {
+          // Windows NVM expects version without 'v' prefix
+          command = `${manager.useCommand} ${versionNumber}`;
+        } else {
+          // Unix NVM can handle both formats
+          command = `${manager.useCommand} ${nodeVersion.version}`;
+        }
         break;
       case "fnm":
         command = `${manager.useCommand} ${nodeVersion.version}`;
@@ -434,11 +466,7 @@ class NodeVersionProvider implements vscode.Disposable {
     }
 
     try {
-      const terminal = vscode.window.createTerminal(`Switch Node Version`);
-      terminal.sendText(command);
-      terminal.show();
-
-      // Show progress
+      // Execute the command directly and wait for completion
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
@@ -446,20 +474,119 @@ class NodeVersionProvider implements vscode.Disposable {
           cancellable: false,
         },
         async (progress) => {
-          progress.report({ increment: 50 });
+          progress.report({
+            increment: 25,
+            message: "Executing switch command...",
+          });
 
-          // Wait a bit for the switch to complete
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          try {
+            // Execute the switch command directly
+            const isWindows = os.platform() === "win32";
+            const execCommand =
+              isWindows && manager.name === "nvm"
+                ? `cmd /c "${command}"`
+                : command;
 
-          progress.report({ increment: 50 });
+            await execAsync(execCommand);
+            progress.report({ increment: 50, message: "Verifying switch..." });
 
-          // Refresh to show new version
-          await this.refresh();
+            // Wait a moment for the environment to update
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            // Verify the switch was successful
+            const currentVersion = await this.getNodeVersion();
+            progress.report({ increment: 25, message: "Switch completed!" });
+
+            if (
+              currentVersion &&
+              (currentVersion === nodeVersion.version ||
+                currentVersion.replace("v", "") === versionNumber)
+            ) {
+              // Switch was successful, ask user about reload
+              setTimeout(async () => {
+                const reloadAction = "Reload VS Code";
+                const skipAction = "Skip Reload";
+
+                const action = await vscode.window.showInformationMessage(
+                  `Successfully switched to Node.js ${nodeVersion.version}. Reload VS Code to apply changes everywhere.`,
+                  { modal: false },
+                  reloadAction,
+                  skipAction,
+                );
+
+                if (action === reloadAction) {
+                  await vscode.commands.executeCommand(
+                    "workbench.action.reloadWindow",
+                  );
+                }
+              }, 500);
+            } else {
+              // Switch might not be immediately effective, show terminal for manual verification
+              const terminal = vscode.window.createTerminal({
+                name: `Node Version Switch`,
+                shellPath:
+                  isWindows && manager.name === "nvm" ? "cmd.exe" : undefined,
+              });
+
+              terminal.sendText(command);
+              terminal.sendText("node --version"); // Show current version
+              terminal.show();
+
+              vscode.window
+                .showWarningMessage(
+                  `Node.js version switch command executed. Please check the terminal and reload VS Code if needed.`,
+                  "Reload VS Code",
+                )
+                .then((action) => {
+                  if (action === "Reload VS Code") {
+                    vscode.commands.executeCommand(
+                      "workbench.action.reloadWindow",
+                    );
+                  }
+                });
+            }
+
+            // Update our status bar
+            await this.refresh();
+          } catch (execError) {
+            // If direct execution fails, fall back to terminal method
+            console.log(
+              "Direct execution failed, using terminal method:",
+              execError,
+            );
+
+            const terminal = vscode.window.createTerminal({
+              name: `Node Version Switch`,
+              shellPath:
+                isWindows && manager.name === "nvm" ? "cmd.exe" : undefined,
+            });
+
+            terminal.sendText(command);
+            terminal.sendText("node --version"); // Show current version after switch
+            terminal.show();
+
+            // Wait for terminal command to complete
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+
+            // Update status bar
+            await this.refresh();
+
+            // Ask user to reload
+            setTimeout(async () => {
+              const action = await vscode.window.showInformationMessage(
+                `Node.js version switch command sent to terminal. Reload VS Code to apply changes everywhere.`,
+                "Reload VS Code",
+                "Skip",
+              );
+
+              if (action === "Reload VS Code") {
+                await vscode.commands.executeCommand(
+                  "workbench.action.reloadWindow",
+                );
+              }
+            }, 1000);
+          }
         },
-      );
-
-      vscode.window.showInformationMessage(
-        `Switched to Node.js ${nodeVersion.version}. You may need to reload VS Code or restart your terminal.`,
       );
     } catch (error) {
       vscode.window.showErrorMessage(
