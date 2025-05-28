@@ -13,6 +13,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with .nvmrc files
 - Custom installation paths support
 
+## [1.2.0] - 2025-05-28
+
+### Added
+- 🔄 **Automatic VS Code Reload**: VS Code now automatically reloads after successful Node.js version switching
+- ✅ **Version Switch Verification**: Extension now verifies that version switching was successful before proceeding
+- 🖥️ **Direct Command Execution**: Improved version switching by executing commands directly instead of only using terminals
+- 📊 **Enhanced Progress Reporting**: Detailed progress messages during version switching ("Executing switch command...", "Verifying switch...", "Switch completed!")
+- 🛡️ **Fallback Terminal Method**: If direct execution fails, gracefully falls back to terminal-based switching
+
+### Fixed
+- 🐛 **Windows NVM Compatibility**: Fixed "NVM for Windows should be run from terminal such as CMD or Powershell" error
+- 🔧 **Platform-Specific Command Execution**: Added proper Windows platform detection and CMD execution for NVM commands
+- 📝 **Version Format Handling**: Fixed version number formatting for Windows NVM (removes 'v' prefix when needed)
+- ⚡ **Terminal Shell Selection**: Automatically uses `cmd.exe` for NVM operations on Windows
+- 🎯 **Version Parsing**: Enhanced version line parsing to handle both Windows and Unix NVM output formats
+
+### Changed
+- 🚀 **Improved Version Switching Flow**: Version switching now waits for actual completion before showing success messages
+- 💬 **Better User Feedback**: More informative progress messages and error handling during version operations
+- ⏱️ **Timing Improvements**: Better timing coordination between progress dialogs and confirmation prompts
+- 🔄 **Reload Prompt Logic**: Reload prompt only appears after successful version switching verification
+
+### Technical Improvements
+- 🏗️ **Enhanced Error Handling**: Comprehensive error handling with graceful fallbacks for different execution methods
+- 🛠️ **Cross-Platform Compatibility**: Improved support for Windows, macOS, and Linux environments
+- 📋 **Command Execution Strategy**: Dual approach with direct execution and terminal fallback for maximum compatibility
+- 🔍 **Version Detection**: More robust current version detection and verification after switching
+
+### User Experience
+- ✨ **Seamless Workflow**: Version switching now feels instant with automatic reload
+- 🎯 **Clear Status Updates**: Users always know what's happening during version operations
+- 🛡️ **Reliable Operation**: Reduced failures and improved success rates for version switching
+- 💡 **Intuitive Feedback**: Better visual and textual feedback throughout the switching process
+
 ## [1.1.0] - 2025-05-28
 
 ### Added
@@ -84,26 +118,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Migration Guide
 
-### From v1.0.0 to v1.1.0
+### From v1.1.0 to v1.2.0
 
 **No Breaking Changes** - Your existing configuration will continue to work exactly as before.
 
 #### New Behavior
-- **Status Bar Click**: Now opens version picker instead of copying version
-- **Copy Function**: Still available via Command Palette (`Ctrl+Shift+P` → "Copy Node Version")
+- **Automatic Reload**: VS Code now automatically reloads after successful Node.js version switching
+- **Better Windows Support**: Fixed NVM for Windows compatibility issues
+- **Improved Reliability**: More robust version switching with better error handling
 
-#### New Features You Can Use
-1. **Switch Versions**: Click the status bar to see and switch between installed Node.js versions
-2. **Install Versions**: Use Command Palette → "Install Node Version" to add new versions
-3. **Version Manager Support**: Automatic detection of nvm, fnm, and volta
+#### Enhanced Features You'll Notice
+1. **Seamless Version Switching**: No more manual reloading required - VS Code handles it automatically
+2. **Better Progress Feedback**: Clear progress messages during version switching operations
+3. **Windows NVM Fixed**: Windows users can now switch versions without terminal errors
+4. **Verification System**: Extension verifies version switches were successful before proceeding
 
-#### New Settings (Optional)
+#### Settings (No Changes Required)
+All existing settings continue to work without any changes:
 ```json
 {
-  "nodeVersion.preferredManager": "auto",  // or "nvm", "fnm", "volta"
-  "nodeVersion.showSwitchButton": true     // disable if you prefer old behavior
+  "nodeVersion.preferredManager": "auto",
+  "nodeVersion.showSwitchButton": true,
+  "nodeVersion.showInStatusBar": true,
+  "nodeVersion.statusBarText": "$(symbol-method) Node {version}",
+  "nodeVersion.refreshInterval": 0
 }
 ```
+
+### From v1.0.0 to v1.2.0
+
+**No Breaking Changes** - Direct upgrade path available.
+
+#### Major New Features Since v1.0.0
+1. **Version Switching**: Click status bar to switch between installed Node.js versions
+2. **Version Manager Support**: Works with nvm, fnm, and volta
+3. **Version Installation**: Install new Node.js versions from within VS Code
+4. **Automatic Reload**: VS Code reloads automatically after version switches
+5. **Windows Compatibility**: Full support for Windows NVM
+
+#### Migrating from Copy-Only Behavior
+- **Old**: Click status bar → copies version to clipboard
+- **New**: Click status bar → opens version picker to switch versions
+- **Copy Function**: Still available via Command Palette (`Ctrl+Shift+P` → "Copy Node Version")
 
 ---
 
