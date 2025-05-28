@@ -2,7 +2,7 @@
   "name": "node-version-statusbar",
   "displayName": "Node Version Switch Status Bar",
   "description": "Shows the current Node.js version in the status bar and allows switching between versions",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "ShababulAlam",
   "engines": {
     "vscode": "^1.74.0"
