@@ -1,8 +1,8 @@
 {
   "name": "node-version-statusbar",
-  "displayName": "Node Version Status Bar",
-  "description": "Shows the current Node.js version in the status bar",
-  "version": "1.0.0",
+  "displayName": "Node Version Switch Status Bar",
+  "description": "Shows the current Node.js version in the status bar and allows switching between versions",
+  "version": "1.1.0",
   "publisher": "ShababulAlam",
   "engines": {
     "vscode": "^1.74.0"
@@ -18,7 +18,11 @@
     "node",
     "nodejs",
     "version",
-    "status bar"
+    "status bar",
+    "nvm",
+    "fnm",
+    "volta",
+    "version manager"
   ],
   "icon": "images/icon.png",
   "activationEvents": [
@@ -36,10 +40,20 @@
         "command": "nodeVersion.copyVersion",
         "title": "Copy Node Version",
         "category": "Node Version"
+      },
+      {
+        "command": "nodeVersion.switchVersion",
+        "title": "Switch Node Version",
+        "category": "Node Version"
+      },
+      {
+        "command": "nodeVersion.installVersion",
+        "title": "Install Node Version",
+        "category": "Node Version"
       }
     ],
     "configuration": {
-      "title": "Node Version Status Bar",
+      "title": "Node Version Switch Status Bar",
       "properties": {
         "nodeVersion.showInStatusBar": {
           "type": "boolean",
@@ -55,8 +69,40 @@
           "type": "string",
           "default": "$(symbol-method) Node {version}",
           "description": "Status bar text template. Use {version} as placeholder"
+        },
+        "nodeVersion.preferredManager": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "nvm",
+            "fnm",
+            "volta"
+          ],
+          "default": "auto",
+          "description": "Preferred Node.js version manager (auto = detect automatically)"
+        },
+        "nodeVersion.showSwitchButton": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable clicking status bar to switch versions"
         }
       }
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "nodeVersion.refresh"
+        },
+        {
+          "command": "nodeVersion.copyVersion"
+        },
+        {
+          "command": "nodeVersion.switchVersion"
+        },
+        {
+          "command": "nodeVersion.installVersion"
+        }
+      ]
     }
   },
   "scripts": {
