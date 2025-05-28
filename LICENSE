@@ -54,7 +54,7 @@ The MIT License is chosen for this VS Code extension because:
 If you use this extension's code in your own projects, attribution is appreciated but not required. A simple mention in your README or documentation would be nice:
 
 ```
-This project uses code from Node Version Status Bar extension
+This project uses code from Node Version Switch Status Bar extension
 https://github.com/shababulalam/node-version-statusbar
 ```
 
