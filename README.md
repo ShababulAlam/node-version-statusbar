@@ -2,7 +2,17 @@
 
 A simple and lightweight VS Code extension that displays your current Node.js version in the status bar.
 
-![Node Version Status Bar Demo](https://via.placeholder.com/600x100/1e1e1e/00ff00?text=Node+v18.17.0)
+![Node Version Status Bar](images/icon.png)
+
+## Screenshots
+
+![Main Feature](images/screenshot1.png)
+
+*The extension displays your current Node.js version in the status bar*
+
+![Copy Feature](images/screenshot2.png)
+
+*Click to copy the version to your clipboard*
 
 ## Features
 
