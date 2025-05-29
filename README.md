@@ -25,8 +25,7 @@ A powerful VS Code extension that displays your current Node.js version in the s
 - **⚙️ Highly Customizable**: Personalize display format and behavior
 - **🛡️ Smart Error Handling**: Clear indicators with actionable suggestions
 - **🎯 Lightweight**: Minimal performance impact on VS Code
-- **🖥️ Windows NVM Support**: Full compatibility with NVM for Windows without terminal errors
-
+- **🖥️ Enhanced Windows Support**: Robust Windows NVM compatibility with multiple execution methods
 ## Installation
 
 ### From VS Code Marketplace
@@ -141,18 +140,18 @@ The extension provides these commands (accessible via `Ctrl+Shift+P`):
 
 1. **Click Status Bar**: Click the Node.js version in the status bar
 2. **Select Version**: Choose from the list of installed versions
-3. **Automatic Processing**: The extension handles the switching and verification
-4. **Auto Reload**: VS Code automatically reloads to apply changes (optional)
+3. **Automatic Processing**: Extension handles switching with multiple execution methods
+4. **Auto Reload**: VS Code automatically reloads to apply changes
 
 **Progress Indicators:**
-- "Executing switch command..." - Running the version manager command
-- "Verifying switch..." - Checking if the switch was successful  
-- "Switch completed!" - Version switch verified and successful
+- "Executing switch command..." - Running version manager with fallback methods
+- "Verifying switch..." - Confirming the switch was successful  
+- "Switch completed!" - Version verified and VS Code ready to reload
 
-**Reload Options:**
-- **Automatic**: VS Code will prompt to reload after successful switching
-- **Manual**: Choose "Skip Reload" if you prefer to reload later
-- **Verification**: Extension verifies the switch worked before prompting reload
+**Windows NVM Enhancements:**
+- **Multiple Execution Methods**: cmd.exe, PowerShell, and environment-specific execution
+- **Automatic Fallback**: If one method fails, tries alternative approaches
+- **Enhanced Terminal**: Detailed feedback with step-by-step verification
 
 ### Installing New Versions
 
@@ -173,6 +172,26 @@ The extension provides these commands (accessible via `Ctrl+Shift+P`):
 | **Major** | `18` | Latest in major version |
 
 ## Troubleshooting
+
+### Windows NVM Compatibility Issues
+
+**Problem**: "NVM for Windows should be run from terminal such as CMD or Powershell"
+
+**Automatic Solutions** (Extension handles these automatically):
+1. **Method 1**: Direct cmd.exe shell execution
+2. **Method 2**: `cmd /c "nvm command"` execution  
+3. **Method 3**: PowerShell command execution
+4. **Method 4**: Environment-specific execution with proper PATH
+5. **Fallback**: Enhanced terminal method with detailed feedback
+
+**Manual Verification**:
+```cmd
+# Test NVM installation
+nvm version
+nvm list
+
+# Verify PATH configuration
+echo %PATH% | findstr nvm
 
 ### Windows NVM Issues
 
@@ -368,7 +387,15 @@ When reporting bugs, please include:
 
 ## Changelog
 
-### [1.2.0] - Latest Release ✨
+## [1.3.0] - Latest Release ✨
+- **Automatic VS Code Reload**: Seamless version switching with auto-reload functionality
+- **Enhanced Windows NVM Support**: Multiple execution methods for maximum compatibility
+- **Robust Error Handling**: Automatic fallback methods for reliable operation
+- **Version Switch Verification**: Ensures switches work before proceeding
+- **Enhanced Progress Reporting**: Detailed status updates during all operations
+- **Terminal Integration**: Improved terminal handling for complex environments
+
+### [1.2.0] 
 - **Automatic VS Code Reload**: Seamless version switching with auto-reload
 - **Windows NVM Compatibility**: Fixed NVM for Windows terminal errors
 - **Version Switch Verification**: Ensures switches actually work before proceeding
