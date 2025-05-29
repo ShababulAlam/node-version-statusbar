@@ -21,6 +21,12 @@ interface VersionManager {
   isAvailable: boolean;
 }
 
+// Helper function to detect Windows (both 32-bit and 64-bit)
+function isWindowsPlatform(): boolean {
+  const platform = os.platform();
+  return platform === "win32" || platform.startsWith("win");
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("Node Version Switch Status Bar extension is now active!");
 
@@ -101,7 +107,7 @@ class NodeVersionProvider implements vscode.Disposable {
   }
 
   private async initializeVersionManagers() {
-    const isWindows = os.platform() === "win32";
+    const isWindows = isWindowsPlatform();
 
     const managers: VersionManager[] = [
       {
@@ -130,44 +136,27 @@ class NodeVersionProvider implements vscode.Disposable {
     // Check which version managers are available
     for (const manager of managers) {
       try {
-        let execCommand: string;
-        let execOptions = {};
-
         if (isWindows && manager.name === "nvm") {
-          // Try multiple methods for Windows NVM
-          const methods = [
-            // Method 1: Direct cmd execution with proper shell
-            {
-              command: `${manager.command} --version`,
-              options: { shell: "cmd.exe", windowsHide: true },
-            },
-            // Method 2: Explicit cmd /c execution
-            {
-              command: `cmd /c "${manager.command} --version"`,
-              options: { windowsHide: true },
-            },
-            // Method 3: PowerShell execution
-            {
-              command: `powershell -Command "${manager.command} --version"`,
-              options: { windowsHide: true },
-            },
-          ];
-
-          let available = false;
-          for (const method of methods) {
+          // For Windows NVM, we only check if the command exists
+          // We don't try to execute it directly as it requires terminal context
+          try {
+            // Simple check to see if nvm command exists
+            await execAsync("where nvm", { windowsHide: true });
+            manager.isAvailable = true;
+          } catch {
+            // Try alternative check
             try {
-              await execAsync(method.command, method.options);
-              available = true;
-              break;
-            } catch (methodError) {
-              continue;
+              await execAsync('cmd /c "nvm version" 2>nul', {
+                windowsHide: true,
+              });
+              manager.isAvailable = true;
+            } catch {
+              manager.isAvailable = false;
             }
           }
-          manager.isAvailable = available;
         } else {
           // Non-Windows or non-NVM managers
-          execCommand = `${manager.command} --version`;
-          await execAsync(execCommand);
+          await execAsync(`${manager.command} --version`);
           manager.isAvailable = true;
         }
       } catch (error) {
@@ -392,50 +381,31 @@ class NodeVersionProvider implements vscode.Disposable {
     try {
       const isWindows = os.platform() === "win32";
 
-      let execCommand: string;
-      let execOptions = {};
-
       if (isWindows && manager.name === "nvm") {
-        // Try multiple execution methods for Windows NVM
-        const methods = [
-          // Method 1: Direct execution with cmd shell
-          {
-            command: manager.listCommand,
-            options: { shell: "cmd.exe", windowsHide: true },
-          },
-          // Method 2: Explicit cmd /c
-          {
-            command: `cmd /c "${manager.listCommand}"`,
-            options: { windowsHide: true },
-          },
-          // Method 3: PowerShell
-          {
-            command: `powershell -Command "${manager.listCommand}"`,
-            options: { windowsHide: true },
-          },
-        ];
+        // For Windows NVM, we'll use a different approach since direct execution is problematic
+        // We'll execute in a way that's more compatible with Windows NVM requirements
+        try {
+          const { stdout } = await execAsync(
+            `cmd /c "cd /d %USERPROFILE% && ${manager.listCommand}"`,
+            {
+              windowsHide: true,
+              timeout: 10000,
+            },
+          );
 
-        let stdout = "";
-        for (const method of methods) {
-          try {
-            const result = await execAsync(method.command, method.options);
-            stdout = result.stdout;
-            break;
-          } catch (methodError) {
-            continue;
+          const lines = stdout.split("\n").filter((line) => line.trim());
+          for (const line of lines) {
+            const version = this.parseVersionLine(line, manager);
+            if (version) {
+              versions.push(version);
+            }
           }
-        }
-
-        if (!stdout) {
-          throw new Error("All Windows NVM execution methods failed");
-        }
-
-        const lines = stdout.split("\n").filter((line) => line.trim());
-        for (const line of lines) {
-          const version = this.parseVersionLine(line, manager);
-          if (version) {
-            versions.push(version);
-          }
+        } catch (cmdError) {
+          // If that fails, we'll return empty array and let the terminal method handle it
+          console.log(
+            "Windows NVM list command failed, versions will be shown when terminal is used:",
+            cmdError,
+          );
         }
       } else {
         // Non-Windows or non-NVM managers
@@ -512,7 +482,7 @@ class NodeVersionProvider implements vscode.Disposable {
 
   private async switchToVersion(nodeVersion: NodeVersion): Promise<void> {
     const manager = nodeVersion.manager;
-    const isWindows = os.platform() === "win32";
+    const isWindows = isWindowsPlatform();
 
     let command: string;
     const versionNumber = nodeVersion.version.replace("v", ""); // Remove 'v' prefix for Windows NVM
