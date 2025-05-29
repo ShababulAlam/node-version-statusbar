@@ -13,6 +13,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with .nvmrc files
 - Custom installation paths support
 
+## [1.3.0] - 2025-05-28
+
+### Added
+- 🔄 **Automatic VS Code Reload**: VS Code now automatically reloads after successful Node.js version switching
+- ✅ **Version Switch Verification**: Extension now verifies that version switching was successful before proceeding
+- 🖥️ **Enhanced Windows NVM Support**: Multiple execution methods for maximum Windows compatibility
+- 📊 **Advanced Progress Reporting**: Detailed progress messages during version switching operations
+- 🛡️ **Robust Fallback System**: Automatic fallback to alternative execution methods when primary methods fail
+- 🔧 **Multiple Execution Strategies**: 4 different command execution methods for Windows NVM compatibility
+
+### Fixed
+- 🐛 **Windows NVM Terminal Error**: Completely resolved "NVM for Windows should be run from terminal" error
+- 🔧 **Platform-Specific Execution**: Enhanced Windows platform detection with proper CMD/PowerShell execution
+- 📝 **Version Format Handling**: Improved version number formatting for all Windows NVM configurations
+- ⚡ **Shell Context Issues**: Automatic shell selection and environment configuration for NVM operations
+- 🎯 **Command Execution Reliability**: Multiple execution methods ensure commands work across different Windows setups
+- 🛠️ **Environment Variable Handling**: Proper PATH and environment variable management for NVM operations
+
+### Changed
+- 🚀 **Version Switching Flow**: Enhanced switching process with automatic verification and reload
+- 💬 **User Feedback System**: More informative progress messages and success confirmations
+- ⏱️ **Execution Strategy**: Primary direct execution with intelligent terminal fallback
+- 🔄 **Reload Behavior**: Auto-reload by default with option to skip for user control
+- 🖥️ **Terminal Integration**: Enhanced terminal creation with proper shell configuration for Windows NVM
+
+### Technical Improvements
+- 🏗️ **Multi-Method Execution**: 4-tier execution strategy for maximum Windows NVM compatibility
+- 🛠️ **Enhanced Error Handling**: Comprehensive error handling with graceful fallbacks
+- 📋 **Command Strategy Pattern**: Intelligent command execution with method prioritization
+- 🔍 **Verification System**: Post-execution verification to ensure operations completed successfully
+- 🎯 **Cross-Platform Optimization**: Platform-specific optimizations for Windows, macOS, and Linux
+- 💡 **Smart Terminal Handling**: Context-aware terminal creation with proper environment setup
+
+### Windows NVM Specific Fixes
+- 🔧 **Method 1**: Direct cmd.exe shell execution with windowsHide option
+- 🔧 **Method 2**: Explicit `cmd /c "command"` execution for compatibility
+- 🔧 **Method 3**: PowerShell command execution as alternative
+- 🔧 **Method 4**: Environment-specific execution with proper ComSpec configuration
+- 🔧 **Fallback**: Enhanced terminal method with detailed step-by-step feedback
+- 🔧 **Terminal Enhancement**: Persistent cmd.exe terminal with /k flag for NVM operations
+
+### User Experience Enhancements
+- ✨ **Seamless Workflow**: Version switching now feels instant and reliable
+- 🎯 **Clear Feedback**: Users always know what's happening during operations
+- 🛡️ **Maximum Reliability**: Multiple fallback methods ensure operations rarely fail
+- 💡 **Intelligent Automation**: Smart defaults with user override options
+- 🔄 **Consistent Behavior**: Reliable operation across all Windows configurations
+
 ## [1.2.0] - 2025-05-28
 
 ### Added
