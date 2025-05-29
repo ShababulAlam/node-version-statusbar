@@ -387,7 +387,12 @@ When reporting bugs, please include:
 
 ## Changelog
 
-## [1.3.0] - Latest Release ✨
+## [1.3.1] - Latest Release ✨
+
+- **Enhanced Windows NVM Support**: Terminal approach first functionality added
+
+
+## [1.3.0] 
 - **Automatic VS Code Reload**: Seamless version switching with auto-reload functionality
 - **Enhanced Windows NVM Support**: Multiple execution methods for maximum compatibility
 - **Robust Error Handling**: Automatic fallback methods for reliable operation
