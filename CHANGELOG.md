@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with .nvmrc files
 - Custom installation paths support
 
+## [1.3.1] - 2025-05-28
+### Added
+- 🖥️ **Enhanced Windows NVM Support**: Terminal first approach added
+
 ## [1.3.0] - 2025-05-28
 
 ### Added
