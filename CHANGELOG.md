@@ -13,6 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with .nvmrc files
 - Custom installation paths support
 
+## [1.4.0] - 2025-05-30
+
+### Added
+- 🧹 **Automatic Terminal Cleanup**: Terminals now automatically close after version switching and installation operations
+- ⏱️ **Smart Cleanup Timing**: Different cleanup delays for switching (1s) vs installation (2s) to accommodate varying output volumes
+- 📊 **Enhanced Progress Tracking**: Progress indicators now include cleanup phase for better user awareness
+
+### Fixed
+- 🖥️ **Terminal Clutter**: Eliminates accumulation of terminal windows after repeated version operations
+- 🔧 **Resource Management**: Proper terminal disposal prevents memory leaks and improves VS Code performance
+- ⚡ **User Experience**: Cleaner interface with automatic cleanup while preserving command output visibility
+
+### Changed
+- 🚀 **Installation Flow**: Installation process now includes automatic progress tracking and terminal cleanup
+- 💬 **Progress Messages**: Updated progress reporting to include "Cleaning up..." step for transparency
+- 🛡️ **Error Handling**: Enhanced error handling ensures terminal cleanup occurs even when operations fail
+
 ## [1.3.1] - 2025-05-28
 ### Added
 - 🖥️ **Enhanced Windows NVM Support**: Terminal first approach added
