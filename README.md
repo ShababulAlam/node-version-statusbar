@@ -18,6 +18,7 @@ A powerful VS Code extension that displays your current Node.js version in the s
 
 - **🚀 Version Switching**: Click status bar to instantly switch between installed Node.js versions
 - **🔄 Auto VS Code Reload**: Automatically reloads VS Code after successful version switching
+- **🧹 Automatic Terminal Cleanup**: Terminals close automatically after operations complete
 - **🛠️ Multi-Manager Support**: Works with nvm, fnm, and volta version managers
 - **📦 Install New Versions**: Install new Node.js versions directly from VS Code
 - **📋 One-Click Copy**: Copy version to clipboard via command palette
@@ -387,7 +388,13 @@ When reporting bugs, please include:
 
 ## Changelog
 
-## [1.3.1] - Latest Release ✨
+## [1.4.0] - Latest Release ✨
+
+- **Automatic Terminal Cleanup**: Terminals now close automatically after operations
+- **Enhanced Resource Management**: Better memory usage and cleaner VS Code interface
+- **Smart Cleanup Timing**: Intelligent delays ensure output visibility before cleanup
+
+## [1.3.1] 
 
 - **Enhanced Windows NVM Support**: Terminal approach first functionality added
 
