@@ -179,20 +179,20 @@ The extension provides these commands (accessible via `Ctrl+Shift+P`):
 **Problem**: "NVM for Windows should be run from terminal such as CMD or Powershell"
 
 **Automatic Solutions** (Extension handles these automatically):
-1. **Method 1**: Direct cmd.exe shell execution
-2. **Method 2**: `cmd /c "nvm command"` execution  
-3. **Method 3**: PowerShell command execution
-4. **Method 4**: Environment-specific execution with proper PATH
-5. **Fallback**: Enhanced terminal method with detailed feedback
+1. **Dynamic NVM Path Detection**: Automatically locates `nvm.exe` using `NVM_HOME`, `%APPDATA%\nvm`, or system PATH.
+2. **Enhanced CMD Execution**: Uses `cmd.exe /K` to maintain NVM environment during command execution.
+3. **Error Logging**: Detailed console logs for debugging failed commands.
+4. **Fallback Terminal**: Persistent terminal with extended timeouts to ensure command completion.
+5. **Verification**: Confirms version switch success with robust checks.
 
 **Manual Verification**:
 ```cmd
 # Test NVM installation
 nvm version
 nvm list
-
-# Verify PATH configuration
-echo %PATH% | findstr nvm
+echo %NVM_HOME%
+# Verify NVM path
+where nvm.exe
 
 ### Windows NVM Issues
 
@@ -388,7 +388,13 @@ When reporting bugs, please include:
 
 ## Changelog
 
-## [1.4.0] - Latest Release ✨
+## [1.4.1] - Latest Release ✨
+
+- **Dynamic NVM Path Detection**: Automatically locates `nvm.exe` using `NVM_HOME`, `%APPDATA%\nvm`, or system PATH for reliable Windows NVM operations.
+- **Enhanced Terminal Stability**: Improved CMD execution with persistent `/K` flag and extended timeouts to ensure command completion.
+- **Robust Error Handling**: Added detailed console logs and user-friendly error messages to guide troubleshooting of NVM issues.
+
+## [1.4.0] 
 
 - **Automatic Terminal Cleanup**: Terminals now close automatically after operations
 - **Enhanced Resource Management**: Better memory usage and cleaner VS Code interface
