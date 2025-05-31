@@ -5,13 +5,31 @@ All notable changes to the "Node Version Switch Status Bar" extension will be do
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
 
 ### Planned
 - Workspace-specific Node.js version management
 - Package.json engine version comparison and warnings
 - Integration with .nvmrc files
 - Custom installation paths support
+
+## [1.4.1] - 2025-05-31 
+
+### Added
+- 🔍 **Dynamic NVM Path Detection**: Automatically locates `nvm.exe` using `NVM_HOME`, `%APPDATA%\nvm`, or system PATH for Windows NVM operations.
+- 📜 **Enhanced Error Logging**: Added detailed console logs for command execution and verification to aid debugging.
+- ⏱️ **Extended Terminal Timeouts**: Increased timeouts for Windows NVM operations (5s for switching, 10s for installation) to ensure command completion.
+
+### Fixed
+- 🐛 **Persistent Windows NVM Error**: Resolved "NVM for Windows should be run from terminal such as CMD or Powershell" by using dynamic path detection and persistent `cmd.exe /K` terminal execution.
+- 🔧 **Terminal Stability**: Improved terminal handling with `/K` flag to maintain NVM environment and capture command output.
+- 🎯 **Verification Reliability**: Enhanced version switch verification to handle edge cases in Windows NVM output parsing.
+
+### Changed
+- 🚀 **Command Execution Flow**: Updated Windows NVM commands to use `call` with verified `nvm.exe` path and error code checking.
+- 💬 **User Feedback**: Improved error messages to guide users on NVM path issues and manual verification steps.
+- 🛠️ **Terminal Management**: Adjusted terminal cleanup delays to ensure output visibility while preventing clutter.
+
+## [Unreleased]
 
 ## [1.4.0] - 2025-05-30
 
